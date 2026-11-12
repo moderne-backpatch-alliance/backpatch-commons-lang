@@ -1,0 +1,21 @@
+schema: osera-patch-evidence/0.1.0
+producer: moderne
+release: 2.6.1-backpatch-00001
+baseline: v2.6+backpatch.baseline
+fixes:
+  - cve: CVE-2025-48924
+    upstream_fix_url: https://github.com/advisories/GHSA-j288-q9x7-2f5v
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2025-48924
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-commons-lang/commit/6784fa8
+    basis: backport
+    artifacts:
+      - commons-lang:commons-lang
+    note: New in this release; ported onto 2.6; fixed at 2.6.1-backpatch-00001 (backpatch-commons-lang@6784fa8).
+tests:
+  commit: 6784fa821cea1e184dc0d523202b0e0931ddcac9
+  command: mvn -B -T1 -Dossindex.skip=true -DargLine=-Xss640k -Dmaven.test.failure.ignore=true clean test
+  runtime: openjdk version 1.8.0_382, Apache Maven 3.9.16
+  report: commons-lang-2.6.1-backpatch-00001-tests.zip
+  report_sha256: 4ab28084fcc9b80e639e881b65aeb72a8ca46ad760f80d56b108adad4b3af1a6
+  result: pass
+  note: "1976 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors. Known flake org.apache.commons.lang.builder.ToStringBuilderTest#testSelfInstanceTwoVarsReflectionObjectCycle failed in the full run and passed when counter.py reran its class once, which counts as a pass (Peter's flaky rule, applied by the tool because this suite's surefire has no rerun); the first run's report is in the archive as FLAKY-first-run-*. Main classes compiled with Zulu 6u42's javac at the pom's source and target; test classes compiled and run on Zulu 8. ToStringBuilderTest's registry-cycle tests are a known flake (a ToStringStyle registry left set by an earlier test) that fails at the baseline too: in five full-suite runs each on Zulu 6 classes, ToStringBuilderTest was red in 4 at the baseline, 1 with only the production change, 3 with only the added tests and 3 with this release's fix."
