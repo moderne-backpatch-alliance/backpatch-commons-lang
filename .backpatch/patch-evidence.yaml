@@ -11,44 +11,66 @@ not_affected:
     upstream_fix_url: https://github.com/apache/commons-lang/commit/b424803abdb2bec818e4fbcb251ce031c22aca53
     checks:
       - kind: upstream test
-        command: .backpatch/not-affected/CVE-2025-48924/run.sh
-        runtime: OpenJDK 25.0.2, macOS 27.2 arm64
+        test: .backpatch/not-affected/CVE-2025-48924/src/test/java/org/apache/commons/lang/ClassUtilsOssFuzzTest.java
+        command: cd .backpatch/not-affected/CVE-2025-48924 && mvn test
+        control_command: cd .backpatch/not-affected/CVE-2025-48924 && mvn test -Dcommons-lang.version=2.6
+        runtime: OpenJDK 25.0.2, Maven 3.9.16, macOS 27.2 arm64
         baseline:
           jar_sha1: 16313e02a793435009f1e458fa4af5d879f6fb11
           result: pass
-          report: .backpatch/not-affected/CVE-2025-48924/test-2.4.txt
-          report_sha256: 9ee799fe92904cbff55e99dc9a6f490c0b79a46c7da58950b29c15a18f8917cc
+          report: .backpatch/not-affected/CVE-2025-48924/reports/2.4/org.apache.commons.lang.ClassUtilsOssFuzzTest.txt
+          report_sha256: f9d813358ecf137803a8ac0c1a4e6e6580ecc87ccd1919d0035fe7529c9eb900
         control:
           jar_sha1: 0ce1edb914c94ebc388f086c6827e8bdeec71ac2
           result: fail
-          report: .backpatch/not-affected/CVE-2025-48924/test-2.6.txt
-          report_sha256: fd2be8f5d9222cbdcd7418a049e1d0ca5c4bcbfb2c28995576bc5d78a0cffc26
-        note: "Upstream's testGetClassLongName and testGetClassLongIllegalName from the fix commit, ported to JUnit 3.8.1 in src/test/org/apache/commons/lang/ClassUtilsOssFuzzTest.java with both inputs unchanged, run against Central's commons-lang 2.4 (baseline) and 2.6 (control) jars, each method in a fresh JVM at -Xss256k, ten times. 2.4 throws ClassNotFoundException in all 20 runs; 2.6 throws StackOverflowError in all 20. At the JVM's default stack 2.6 passes too, so the stack is part of the command."
+          report: .backpatch/not-affected/CVE-2025-48924/reports/2.6/org.apache.commons.lang.ClassUtilsOssFuzzTest.txt
+          report_sha256: 1bfe6b29af9797bc6442c57cc41223018d9a74f8cc70d5c2d546959e63a35d24
+        note: "Upstream's ClassUtilsOssFuzzTest from the fix commit, unchanged but for the package, run by Surefire at -Xss256k against Central's jar. 2.4 throws ClassNotFoundException in both tests; 2.6 throws StackOverflowError in both. At the JVM's default stack 2.6 survives these inputs, so the stack is part of the build."
       - kind: depth sweep
-        command: .backpatch/not-affected/CVE-2025-48924/run.sh
-        runtime: OpenJDK 25.0.2, macOS 27.2 arm64
+        test: .backpatch/not-affected/CVE-2025-48924/src/test/java/org/apache/commons/lang/ClassUtilsDepthTest.java
+        command: cd .backpatch/not-affected/CVE-2025-48924 && mvn test
+        control_command: cd .backpatch/not-affected/CVE-2025-48924 && mvn test -Dcommons-lang.version=2.6
+        runtime: OpenJDK 25.0.2, Maven 3.9.16, macOS 27.2 arm64
         baseline:
           jar_sha1: 16313e02a793435009f1e458fa4af5d879f6fb11
           result: pass
-          report: .backpatch/not-affected/CVE-2025-48924/sweep-2.4.txt
-          report_sha256: 9e78bd3ff50bb7d0aabff7b4d6d6be03f23cbd9bb58ce2c32db1d353c7e26232
+          report: .backpatch/not-affected/CVE-2025-48924/reports/2.4/org.apache.commons.lang.ClassUtilsDepthTest.txt
+          report_sha256: c2a8f4afedbdc1ea3295f6d9c3a99a7b5bd10508ad7d69949c2380e54183666d
         control:
           jar_sha1: 0ce1edb914c94ebc388f086c6827e8bdeec71ac2
           result: fail
-          report: .backpatch/not-affected/CVE-2025-48924/sweep-2.6.txt
-          report_sha256: b210e3f279ef05c636157c7d8d453244af35455bbe8fbc97572a46391a926dd6
-        note: "ClassUtils.getClass on a name of 5,000, 50,000 and 500,000 dots, each in a fresh JVM at -Xss256k. 2.4 throws ClassNotFoundException at every depth, so its result does not depend on the input's depth; 2.6 throws StackOverflowError at every depth."
+          report: .backpatch/not-affected/CVE-2025-48924/reports/2.6/org.apache.commons.lang.ClassUtilsDepthTest.txt
+          report_sha256: 9cfe630930641ee9b6932342d5fd9b4f36c2659092839a886503d1c5ba414a2f
+        note: "ClassUtils.getClass on a name of 5,000, 50,000 and 500,000 dots. 2.4 throws ClassNotFoundException at every depth, so its result does not depend on the input's depth; 2.6 throws StackOverflowError at every depth."
       - kind: bytecode
-        command: .backpatch/not-affected/CVE-2025-48924/run.sh
-        runtime: OpenJDK 25.0.2, macOS 27.2 arm64
+        test: .backpatch/not-affected/CVE-2025-48924/src/test/java/org/apache/commons/lang/ClassUtilsCallGraphTest.java
+        command: cd .backpatch/not-affected/CVE-2025-48924 && mvn test
+        control_command: cd .backpatch/not-affected/CVE-2025-48924 && mvn test -Dcommons-lang.version=2.6
+        runtime: OpenJDK 25.0.2, Maven 3.9.16, macOS 27.2 arm64
         baseline:
           jar_sha1: 16313e02a793435009f1e458fa4af5d879f6fb11
           result: no cycle
-          report: .backpatch/not-affected/CVE-2025-48924/javap-2.4.txt
-          report_sha256: 3c15189f99220c227795fd7e6bfb919beea69bf807830b45d6536ab724b8271b
+          report: .backpatch/not-affected/CVE-2025-48924/reports/2.4/org.apache.commons.lang.ClassUtilsCallGraphTest.txt
+          report_sha256: bf25f2866a9e00e4cf73b3f6af7e39a09cd284b0babd51c0bc365d646f3c9b1c
         control:
           jar_sha1: 0ce1edb914c94ebc388f086c6827e8bdeec71ac2
           result: cycle
-          report: .backpatch/not-affected/CVE-2025-48924/javap-2.6.txt
-          report_sha256: 11c207fbe1b7749995498b97e1459af183f83a9cdad05b049f73d8b956e721da
-        note: "javap -c -p of ClassUtils, calls among the getClass overloads and toCanonicalName. In 2.4 they form a chain ending in toCanonicalName, Class.forName and StringUtils.deleteWhitespace, with no self-call; in 2.6 getClass(ClassLoader, String, boolean) calls itself, the recursion the advisory names."
+          report: .backpatch/not-affected/CVE-2025-48924/reports/2.6/org.apache.commons.lang.ClassUtilsCallGraphTest.txt
+          report_sha256: bdab5ba04e6e8888bc05d0d8b456a7bb1541bf8107e5cb00e08914832f806729
+        note: "Calls among the getClass overloads and toCanonicalName in the shipped ClassUtils.class, read with the JDK's ClassFile API. In 2.4 they form a chain with no self-call; in 2.6 getClass(ClassLoader, String, boolean) calls itself, the recursion the advisory names."
+      - kind: artifact identity
+        test: .backpatch/not-affected/CVE-2025-48924/src/test/java/org/apache/commons/lang/CentralJarTest.java
+        command: cd .backpatch/not-affected/CVE-2025-48924 && mvn test
+        control_command: cd .backpatch/not-affected/CVE-2025-48924 && mvn test -Dcommons-lang.version=2.6
+        runtime: OpenJDK 25.0.2, Maven 3.9.16, macOS 27.2 arm64
+        baseline:
+          jar_sha1: 16313e02a793435009f1e458fa4af5d879f6fb11
+          result: pass
+          report: .backpatch/not-affected/CVE-2025-48924/reports/2.4/org.apache.commons.lang.CentralJarTest.txt
+          report_sha256: b7299815077b0d4703a79abf761f45e7720a1f1029c070b5c4de051b46ef5ace
+        control:
+          jar_sha1: 0ce1edb914c94ebc388f086c6827e8bdeec71ac2
+          result: pass
+          report: .backpatch/not-affected/CVE-2025-48924/reports/2.6/org.apache.commons.lang.CentralJarTest.txt
+          report_sha256: 9d1f44adc1a792893115df2158d1183860b1ef0cc939dd14748ec74414273c6b
+        note: "The SHA-1 of the jar ClassUtils was loaded from equals the one Maven Central publishes for that version, so every other check ran on Central's bytes."
